@@ -1,0 +1,29 @@
+name: eduregistryselab
+description: "A new Flutter project."
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.6.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  firebase_core: ^3.9.0
+  firebase_auth: ^5.3.4
+  firebase_database: ^11.2.0
+  cloud_firestore: ^5.6.0
+  intl: ^0.20.1 # Add the intl package for date formatting
+  fl_chart: ^0.40.0 # Correct placement of the fl_chart dependency
+  image_picker: ^0.8.6 # Added image_picker dependency for profile image feature
+  shared_preferences: ^2.3.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true

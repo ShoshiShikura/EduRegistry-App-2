@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "197665984333",
+    "project_id": "byte-tech-5f2ef",
+    "storage_bucket": "byte-tech-5f2ef.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:197665984333:android:a79d07867addb5cf2eb104",
+        "android_client_info": {
+          "package_name": "com.example.eduregistryselab"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJetZbRxrWi4zlsxnewPeA_kQsQjqDadQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
