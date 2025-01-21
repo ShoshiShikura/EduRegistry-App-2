@@ -142,6 +142,27 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
               ProfileField(label: "IC Number", value: icNumber),
               ProfileField(label: "Phone", value: phone),
               ProfileField(label: "Address", value: address),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 64.0),
+                ),
+                onPressed: () {
+                  // Add your edit profile action here
+                  print("Edit Profile button pressed");
+                },
+                child: const Text(
+                  "Edit Profile",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
               const Spacer(),
             ],
           ),

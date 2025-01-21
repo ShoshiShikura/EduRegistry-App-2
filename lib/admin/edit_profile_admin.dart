@@ -17,7 +17,7 @@ class AdminEditProfilePage extends StatefulWidget {
     required this.emailAddress,
     required this.address,
     required this.subject,
-    required this.password,
+    required this.password, required String userDocId,
   });
 
   @override

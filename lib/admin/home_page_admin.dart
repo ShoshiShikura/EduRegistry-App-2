@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'add_merit.dart'; // Import Merit System Page
-import 'package:eduregistryselab/student/appointment.dart'; // Import Appointment Page
+import 'add_merit.dart';
+import 'package:eduregistryselab/student/appointment.dart';
 import 'chart_page.dart';
 import 'real_chat.dart';
 import 'profile_page.dart';
@@ -42,37 +42,47 @@ class _HomePageAdminState extends State<HomePageAdmin> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFEAF3FF),
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        centerTitle: false,
-        automaticallyImplyLeading: false,
-        title: FutureBuilder<String>(
-          future: _fetchUserName(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Text(
-                'Hi, Student',
-                style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-              );
-            } else {
-              return Text(
-                'Hi, ${snapshot.data}',
-                style: const TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.bold),
-              );
-            }
-          },
-        ),
-        actions: const [
-          Icon(
-            Icons.notifications,
-            color: Colors.black,
-          ),
-          SizedBox(width: 16),
-        ],
-      ),
+      appBar: _currentIndex == 0
+          ? AppBar(
+              backgroundColor: Colors.white,
+              elevation: 0,
+              centerTitle: false,
+              automaticallyImplyLeading: false,
+              title: FutureBuilder<String>(
+                future: _fetchUserName(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Text(
+                      'Hi, Student',
+                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                    );
+                  } else {
+                    return Text(
+                      'Hi, ${snapshot.data}',
+                      style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                    );
+                  }
+                },
+              ),
+              actions: [
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AdminProfilePage(userDocId: widget.userDocId),
+                      ),
+                    );
+                  },
+                  child: CircleAvatar(
+                    radius: 16,
+                    backgroundImage: AssetImage('assets/profile_pic.jpg'),
+                  ),
+                ),
+                const SizedBox(width: 16),
+              ],
+            )
+          : null,
       body: SafeArea(
         child: IndexedStack(
           index: _currentIndex,
@@ -132,7 +142,6 @@ class HomeContent extends StatelessWidget {
               style: TextStyle(fontSize: 14, color: Colors.black54),
             ),
             const SizedBox(height: 16),
-
             // Blue Card for Dashboard
             Card(
               color: Colors.blue,
@@ -164,9 +173,7 @@ class HomeContent extends StatelessWidget {
                 ),
               ),
             ),
-
             const SizedBox(height: 16),
-
             // Buttons for Merit System and Appointment
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -219,9 +226,7 @@ class HomeContent extends StatelessWidget {
                 ),
               ],
             ),
-
             const SizedBox(height: 20),
-
             // Ranking Section
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -237,7 +242,6 @@ class HomeContent extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-
             // Filters for Ranking
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -248,7 +252,6 @@ class HomeContent extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16),
-
             // Example Ranking Item
             Card(
               shape: RoundedRectangleBorder(
