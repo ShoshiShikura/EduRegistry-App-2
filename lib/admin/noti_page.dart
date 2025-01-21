@@ -13,6 +13,7 @@ class NotiPage extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
+        automaticallyImplyLeading: false, // Removes the back button
         title: const Text(
           'Notification',
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),

@@ -97,17 +97,6 @@ class ChartPage extends StatelessWidget {
                 ),
               ],
             ),
-            // Back Button at the top-left corner
-            Positioned(
-              top: 10,
-              left: 16,
-              child: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ),
           ],
         ),
       ),

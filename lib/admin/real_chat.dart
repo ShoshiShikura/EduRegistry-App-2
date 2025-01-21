@@ -20,18 +20,13 @@ class RealChat extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+        automaticallyImplyLeading: false, // Remove the back button on the first page
         title: const Text(
           "Chat",
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context);
-          },
         ),
         centerTitle: true,
       ),
@@ -61,6 +56,7 @@ class RealChat extends StatelessWidget {
     );
   }
 }
+
 
 class ChatCard extends StatelessWidget {
   final String name;
@@ -117,17 +113,10 @@ class ChatDetailPage extends StatelessWidget {
           style:
               const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
         centerTitle: true,
       ),
       body: Column(
         children: [
-          // Chat conversation example
           Expanded(
             child: ListView(
               children: [
