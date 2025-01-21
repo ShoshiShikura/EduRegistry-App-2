@@ -1,62 +1,66 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AdminEditProfilePage extends StatefulWidget {
+  final String userDocId;
   final String name;
-  final String icNumber;
+  final String className;
   final String matricNumber;
-  final String emailAddress;
+  final String icNumber;
+  final String phone;
   final String address;
-  final String subject;
-  final String password;
 
   const AdminEditProfilePage({
     super.key,
+    required this.userDocId,
     required this.name,
-    required this.icNumber,
+    required this.className,
     required this.matricNumber,
-    required this.emailAddress,
+    required this.icNumber,
+    required this.phone,
     required this.address,
-    required this.subject,
-    required this.password, required String userDocId,
   });
 
   @override
-  _EditProfilePageState createState() => _EditProfilePageState();
+  _AdminEditProfilePageState createState() => _AdminEditProfilePageState();
 }
 
-class _EditProfilePageState extends State<AdminEditProfilePage> {
+class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
   late TextEditingController nameController;
-  late TextEditingController icNumberController;
+  late TextEditingController classController;
   late TextEditingController matricNumberController;
-  late TextEditingController emailAddressController;
+  late TextEditingController icNumberController;
+  late TextEditingController phoneController;
   late TextEditingController addressController;
-  late TextEditingController subjectController;
-  late TextEditingController passwordController;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   void initState() {
     super.initState();
     nameController = TextEditingController(text: widget.name);
-    icNumberController = TextEditingController(text: widget.icNumber);
+    classController = TextEditingController(text: widget.className);
     matricNumberController = TextEditingController(text: widget.matricNumber);
-    emailAddressController = TextEditingController(text: widget.emailAddress);
+    icNumberController = TextEditingController(text: widget.icNumber);
+    phoneController = TextEditingController(text: widget.phone);
     addressController = TextEditingController(text: widget.address);
-    subjectController = TextEditingController(text: widget.subject);
-    passwordController = TextEditingController(text: widget.password);
   }
 
-  void _saveProfile() {
-    final updatedData = {
+  void _saveProfile() async {
+    final updatedProfile = {
       'name': nameController.text,
-      'icNumber': icNumberController.text,
+      'className': classController.text,
       'matricNumber': matricNumberController.text,
-      'emailAddress': emailAddressController.text,
+      'icNumber': icNumberController.text,
+      'phone': phoneController.text,
       'address': addressController.text,
-      'subject': subjectController.text,
-      'password': passwordController.text,
     };
 
-    Navigator.pop(context, updatedData);
+    try {
+      await _firestore.collection('users').doc(widget.userDocId).update(updatedProfile);
+      Navigator.pop(context, updatedProfile);
+    } catch (e) {
+      print("Error updating profile: $e");
+    }
   }
 
   @override
@@ -68,10 +72,7 @@ class _EditProfilePageState extends State<AdminEditProfilePage> {
         elevation: 0,
         title: const Text(
           "Edit Profile",
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         leading: IconButton(
@@ -85,38 +86,38 @@ class _EditProfilePageState extends State<AdminEditProfilePage> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 20),
               _buildTextField(controller: nameController, label: "Name"),
               const SizedBox(height: 10),
-              _buildTextField(controller: icNumberController, label: "IC Number"),
+              _buildTextField(controller: classController, label: "Class"),
               const SizedBox(height: 10),
-              _buildTextField(controller: matricNumberController, label: "Matric Number"),
+              _buildTextField(controller: matricNumberController, label: "Matric No"),
               const SizedBox(height: 10),
-              _buildTextField(controller: emailAddressController, label: "Email Address"),
+              _buildTextField(controller: icNumberController, label: "IC No"),
+              const SizedBox(height: 10),
+              _buildTextField(controller: phoneController, label: "Phone No"),
               const SizedBox(height: 10),
               _buildTextField(controller: addressController, label: "Address"),
-              const SizedBox(height: 10),
-              _buildTextField(controller: subjectController, label: "Subject"),
-              const SizedBox(height: 10),
-              _buildTextField(controller: passwordController, label: "Password"),
               const Spacer(),
-              ElevatedButton(
-                onPressed: _saveProfile,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
+              Center(
+                child: ElevatedButton(
+                  onPressed: _saveProfile,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 64.0),
                   ),
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 16.0, horizontal: 64.0),
-                ),
-                child: const Text(
-                  "Save",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  child: const Text(
+                    "Save",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
             ],
           ),
         ),
@@ -132,6 +133,8 @@ class _EditProfilePageState extends State<AdminEditProfilePage> {
       controller: controller,
       decoration: InputDecoration(
         labelText: label,
+        labelStyle: const TextStyle(color: Colors.black87),
+        hintStyle: const TextStyle(color: Colors.grey),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:eduregistryselab/login_choice_page.dart'; // Import your admin_login_page.dart here
+import 'package:eduregistryselab/login_choice_page.dart';
+import 'package:eduregistryselab/admin/edit_profile_admin.dart';
 
 class AdminProfilePage extends StatefulWidget {
   final String userDocId;
@@ -13,15 +14,13 @@ class AdminProfilePage extends StatefulWidget {
 }
 
 class _AdminProfilePageState extends State<AdminProfilePage> {
-  // Define initial values for profile fields
   String name = "Loading...";
   String className = "Loading...";
   String matricNumber = "Loading...";
   String icNumber = "Loading...";
   String phone = "Loading...";
   String address = "Loading...";
-  String profileImageUrl = ""; // Store the profile image URL
-  File? _profileImage; // Store the selected profile image
+  File? _profileImage;
 
   final ImagePicker _picker = ImagePicker(); // Image picker instance
 
@@ -32,7 +31,6 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
   }
 
   Future<void> _fetchProfileData() async {
-    // Fetch user data locally (No Firebase integration needed for now)
     setState(() {
       name = "John Doe";
       className = "Software Engineering";
@@ -46,7 +44,6 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
   Future<void> _pickImage() async {
     try {
       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-
       if (pickedFile != null) {
         setState(() {
           _profileImage = File(pickedFile.path); // Update profile picture
@@ -74,10 +71,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
         elevation: 0,
         title: const Text(
           "Profile",
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         leading: IconButton(
@@ -93,10 +87,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
               onPressed: () => _signOut(context),
               child: const Text(
                 "Sign Out",
-                style: TextStyle(
-                  color: Colors.red,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
               ),
             ),
           ),
@@ -115,14 +106,10 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                   radius: 50,
                   backgroundColor: Colors.blue,
                   backgroundImage: _profileImage != null
-                      ? FileImage(_profileImage!) // Show picked image
+                      ? FileImage(_profileImage!)
                       : const AssetImage('assets/default_profile.png') as ImageProvider,
                   child: _profileImage == null
-                      ? const Icon(
-                          Icons.person,
-                          size: 60,
-                          color: Colors.white,
-                        )
+                      ? const Icon(Icons.person, size: 60, color: Colors.white)
                       : null,
                 ),
               ),
@@ -130,10 +117,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
               TextButton.icon(
                 onPressed: _pickImage,
                 icon: const Icon(Icons.camera_alt, color: Colors.blue),
-                label: const Text(
-                  "Change Profile Picture",
-                  style: TextStyle(color: Colors.blue),
-                ),
+                label: const Text("Change Profile Picture", style: TextStyle(color: Colors.blue)),
               ),
               const SizedBox(height: 20),
               ProfileField(label: "Name", value: name),
@@ -146,21 +130,40 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
                   padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 64.0),
                 ),
-                onPressed: () {
-                  // Add your edit profile action here
-                  print("Edit Profile button pressed");
+                onPressed: () async {
+                  final updatedProfile = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AdminEditProfilePage(
+                        userDocId: widget.userDocId,
+                        name: name,
+                        className: className,
+                        matricNumber: matricNumber,
+                        icNumber: icNumber,
+                        phone: phone,
+                        address: address,
+                      ),
+                    ),
+                  );
+
+                  // If there's updated data, update the profile page
+                  if (updatedProfile != null) {
+                    setState(() {
+                      name = updatedProfile['name'];
+                      className = updatedProfile['className'];
+                      matricNumber = updatedProfile['matricNumber'];
+                      icNumber = updatedProfile['icNumber'];
+                      phone = updatedProfile['phone'];
+                      address = updatedProfile['address'];
+                    });
+                  }
                 },
                 child: const Text(
                   "Edit Profile",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
               ),
               const Spacer(),
@@ -176,11 +179,7 @@ class ProfileField extends StatelessWidget {
   final String label;
   final String value;
 
-  const ProfileField({
-    super.key,
-    required this.label,
-    required this.value,
-  });
+  const ProfileField({super.key, required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
@@ -188,26 +187,12 @@ class ProfileField extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10.0),
-        ),
+        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10.0)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              label,
-              style: const TextStyle(
-                color: Colors.black54,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              value,
-              style: const TextStyle(
-                color: Colors.black,
-              ),
-            ),
+            Text(label, style: const TextStyle(color: Colors.black54, fontWeight: FontWeight.bold)),
+            Text(value, style: const TextStyle(color: Colors.black)),
           ],
         ),
       ),
