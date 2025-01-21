@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eduregistryselab/student/profile.dart';
-import 'package:eduregistryselab/student/appointment.dart';
+//import 'package:eduregistryselab/student/appointment.dart';
 
 class HomePage extends StatelessWidget {
   final String userDocId;

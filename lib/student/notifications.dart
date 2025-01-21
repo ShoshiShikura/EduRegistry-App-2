@@ -19,7 +19,7 @@ class NotificationsPage extends StatelessWidget {
       print("Fetched ${querySnapshot.docs.length} documents");
 
       return querySnapshot.docs
-          .map((doc) => doc.data() as Map<String, dynamic>)
+          .map((doc) => doc.data())
           .toList();
     } catch (e) {
       print("Error fetching notifications: $e");
