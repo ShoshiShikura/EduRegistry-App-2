@@ -19,6 +19,7 @@ dependencies:
   fl_chart: ^0.40.0 # Correct placement of the fl_chart dependency
   image_picker: ^0.8.7+5
   shared_preferences: ^2.3.5
+ 
 
 dev_dependencies:
   flutter_test:

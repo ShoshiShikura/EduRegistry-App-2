@@ -1,6 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore package
 import 'package:flutter/material.dart';
-//import 'login_choice_page.dart'; // Ensure this import exists
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import 'package:eduregistryselab/login_choice_page.dart'; // Import your admin_login_page.dart here
 
 class AdminProfilePage extends StatefulWidget {
@@ -20,6 +20,10 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
   String icNumber = "Loading...";
   String phone = "Loading...";
   String address = "Loading...";
+  String profileImageUrl = ""; // Store the profile image URL
+  File? _profileImage; // Store the selected profile image
+
+  final ImagePicker _picker = ImagePicker(); // Image picker instance
 
   @override
   void initState() {
@@ -28,45 +32,28 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
   }
 
   Future<void> _fetchProfileData() async {
-    try {
-      // Fetch user data from Firestore
-      final docSnapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .where('Matric No', isEqualTo: widget.userDocId)
-          .limit(1)
-          .get();
+    // Fetch user data locally (No Firebase integration needed for now)
+    setState(() {
+      name = "John Doe";
+      className = "Software Engineering";
+      matricNumber = "123456";
+      icNumber = "890123456789";
+      phone = "0123456789";
+      address = "123 Street, City, Country";
+    });
+  }
 
-      if (docSnapshot.docs.isNotEmpty) {
-        final userData = docSnapshot.docs.first.data();
+  Future<void> _pickImage() async {
+    try {
+      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+      if (pickedFile != null) {
         setState(() {
-          name = userData['Name'] ?? "N/A";
-          className = userData['Class'] ?? "N/A";
-          matricNumber = userData['Matric No'] ?? "N/A";
-          icNumber = userData['IC No'] ?? "N/A";
-          phone = userData['Phone'] ?? "N/A";
-          address = userData['Address'] ?? "N/A";
-        });
-      } else {
-        // Handle no matching document
-        setState(() {
-          name = "Not Found";
-          className = "Not Found";
-          matricNumber = "Not Found";
-          icNumber = "Not Found";
-          phone = "Not Found";
-          address = "Not Found";
+          _profileImage = File(pickedFile.path); // Update profile picture
         });
       }
     } catch (e) {
-      print("Error fetching profile data: $e");
-      setState(() {
-        name = "Error";
-        className = "Error";
-        matricNumber = "Error";
-        icNumber = "Error";
-        phone = "Error";
-        address = "Error";
-      });
+      print("Error picking image: $e");
     }
   }
 
@@ -122,13 +109,30 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 20),
-              const CircleAvatar(
-                radius: 50,
-                backgroundColor: Colors.blue,
-                child: Icon(
-                  Icons.person,
-                  size: 60,
-                  color: Colors.white,
+              GestureDetector(
+                onTap: _pickImage, // Tap to change the profile picture
+                child: CircleAvatar(
+                  radius: 50,
+                  backgroundColor: Colors.blue,
+                  backgroundImage: _profileImage != null
+                      ? FileImage(_profileImage!) // Show picked image
+                      : const AssetImage('assets/default_profile.png') as ImageProvider,
+                  child: _profileImage == null
+                      ? const Icon(
+                          Icons.person,
+                          size: 60,
+                          color: Colors.white,
+                        )
+                      : null,
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextButton.icon(
+                onPressed: _pickImage,
+                icon: const Icon(Icons.camera_alt, color: Colors.blue),
+                label: const Text(
+                  "Change Profile Picture",
+                  style: TextStyle(color: Colors.blue),
                 ),
               ),
               const SizedBox(height: 20),
