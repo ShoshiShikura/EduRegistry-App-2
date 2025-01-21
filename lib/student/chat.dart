@@ -1,3 +1,4 @@
+import 'package:eduregistryselab/admin/real_chat.dart';
 import 'package:flutter/material.dart';
 
 class ChatPage extends StatelessWidget {
@@ -28,13 +29,8 @@ class ChatPage extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
         centerTitle: true,
+        leading: Container(), // Removes the back button
       ),
       body: SafeArea(
         child: Padding(
@@ -99,75 +95,6 @@ class ChatPage extends StatelessWidget {
             label: 'Profile',
           ),
         ],
-      ),
-    );
-  }
-}
-
-class ChatCard extends StatelessWidget {
-  final String name;
-  final String studentClass;
-  final VoidCallback onTap;
-
-  const ChatCard({
-    super.key,
-    required this.name,
-    required this.studentClass,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: ListTile(
-        onTap: onTap,
-        leading: CircleAvatar(
-          backgroundColor: Colors.blue.shade100,
-          child: const Icon(Icons.person, color: Colors.blue),
-        ),
-        title: Text(
-          name,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        subtitle: Text(studentClass),
-        trailing: const Icon(Icons.arrow_forward_ios,
-            size: 16, color: Colors.black54),
-      ),
-    );
-  }
-}
-
-class ChatDetailPage extends StatelessWidget {
-  final String name;
-
-  const ChatDetailPage(this.name, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Text(
-          name,
-          style:
-              const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        centerTitle: true,
-      ),
-      body: const Center(
-        child: Text("Chat Details"),
       ),
     );
   }
