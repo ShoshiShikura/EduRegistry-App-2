@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eduregistryselab/student/profile.dart';
-//import 'package:eduregistryselab/student/appointment.dart';
 
 class HomePage extends StatelessWidget {
   final String userDocId;
@@ -65,13 +64,57 @@ class HomePage extends StatelessWidget {
             },
           ),
           actions: [
-            IconButton(
-              icon: const Icon(Icons.notifications, color: Colors.black),
-              onPressed: () {
-                // Handle notifications here
-              },
-            ),
-          ],
+  FutureBuilder<DocumentSnapshot>(
+    future: FirebaseFirestore.instance
+        .collection('users')
+        .doc(userDocId)
+        .get(),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        // Display a placeholder while loading
+        return const CircleAvatar(
+          radius: 15,
+          backgroundColor: Colors.grey,
+        );
+      } else if (snapshot.hasError || !snapshot.hasData || !snapshot.data!.exists) {
+        // Error or document doesn't exist
+        return const CircleAvatar(
+          radius: 15,
+          backgroundColor: Colors.grey,
+          child: Icon(Icons.person, size: 15, color: Colors.white),
+        );
+      } else {
+        // Access data safely
+        final data = snapshot.data?.data() as Map<String, dynamic>?; // Safely cast to Map
+        final profilePicUrl = data?['profilePicUrl']; // Access field
+
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProfilePage(userDocId: userDocId),
+              ),
+            );
+          },
+          child: CircleAvatar(
+            radius: 15,
+            backgroundImage: profilePicUrl != null
+                ? NetworkImage(profilePicUrl)
+                : null,
+            backgroundColor: Colors.grey,
+            child: profilePicUrl == null
+                ? const Icon(Icons.person, size: 15, color: Colors.white)
+                : null,
+          ),
+        );
+      }
+    },
+  ),
+  const SizedBox(width: 10),
+],
+
+
         ),
         body: SafeArea(
           child: SingleChildScrollView(
@@ -123,7 +166,6 @@ class HomePage extends StatelessWidget {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          // Navigate to the Merit System Page
                           Navigator.pushNamed(context, '/grade_page');
                         },
                         style: ElevatedButton.styleFrom(
@@ -140,7 +182,6 @@ class HomePage extends StatelessWidget {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          // Navigate to the Appointment Page
                           Navigator.pushNamed(context, '/appointment');
                         },
                         style: ElevatedButton.styleFrom(
@@ -179,7 +220,6 @@ class HomePage extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 10),
-                  // Tabs for rankings
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -203,7 +243,6 @@ class HomePage extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 20),
-                  // Ranking Card
                   Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
@@ -231,15 +270,13 @@ class HomePage extends StatelessWidget {
           currentIndex: 0,
           onTap: (index) async {
             if (index == 0) {
-              Navigator.pushNamed(context, '/main'); // Navigate to HomePage
+              Navigator.pushNamed(context, '/main');
             } else if (index == 1) {
-              Navigator.pushNamed(
-                  context, '/grade_page'); // Navigate to GradePage
+              Navigator.pushNamed(context, '/grade_page');
             } else if (index == 2) {
-              Navigator.pushNamed(
-                  context, '/notifications'); // Notifications Page
+              Navigator.pushNamed(context, '/notifications');
             } else if (index == 3) {
-              Navigator.pushNamed(context, '/chat'); // Chat Page
+              Navigator.pushNamed(context, '/chat');
             } else if (index == 4) {
               SharedPreferences prefs = await SharedPreferences.getInstance();
               String? userDocId = prefs.getString('userDocId');
@@ -250,8 +287,6 @@ class HomePage extends StatelessWidget {
                     builder: (context) => ProfilePage(userDocId: userDocId),
                   ),
                 );
-              } else {
-                print('UserDocId is null');
               }
             }
           },
