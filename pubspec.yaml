@@ -17,7 +17,7 @@ dependencies:
   cloud_firestore: ^5.6.0
   intl: ^0.20.1 # Add the intl package for date formatting
   fl_chart: ^0.40.0 # Correct placement of the fl_chart dependency
-  image_picker: ^0.8.6 # Added image_picker dependency for profile image feature
+  image_picker: ^0.8.7+5
   shared_preferences: ^2.3.5
 
 dev_dependencies:

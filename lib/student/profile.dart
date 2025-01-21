@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'edit_profile.dart';
 import 'package:eduregistryselab/login_choice_page.dart';
 import 'package:eduregistryselab/student/home_page.dart' as user_home;
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   final String userDocId;
@@ -22,14 +24,15 @@ class _ProfilePageState extends State<ProfilePage> {
   String icNo = "Loading...";
   String phone = "Loading...";
   String address = "Loading...";
+  String profileImageUrl = ""; // URL for the profile picture
 
   bool isLoading = true; // Add loading indicator state
+
+  File? _profileImage; // Local profile image file
 
   // Fetch user data from Firestore using userDocId
   Future<void> _fetchUserData() async {
     String id = widget.userDocId;
-    print("Retrieved userDocId: $id");
-
     if (id.isNotEmpty) {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -39,8 +42,6 @@ class _ProfilePageState extends State<ProfilePage> {
             await firestore.collection('users').doc(id).get();
 
         if (userDoc.exists) {
-          print("Fetched user document: ${userDoc.data()}"); // Debug print
-
           setState(() {
             name = userDoc["Name"] ?? "N/A";
             className = userDoc["Class"] ?? "N/A";
@@ -48,10 +49,10 @@ class _ProfilePageState extends State<ProfilePage> {
             icNo = userDoc["IC No"] ?? "N/A";
             phone = userDoc["NoPhone"] ?? "N/A";
             address = userDoc["Address"] ?? "N/A";
+            profileImageUrl = userDoc["ProfileImageUrl"] ?? "";
             isLoading = false; // Data loaded
           });
         } else {
-          print("User document does not exist.");
           setState(() {
             isLoading = false; // Stop loading
           });
@@ -62,6 +63,40 @@ class _ProfilePageState extends State<ProfilePage> {
           isLoading = false; // Stop loading
         });
       }
+    }
+  }
+
+  // Pick an image from the gallery
+  Future<void> _pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedFile =
+        await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _profileImage = File(pickedFile.path);
+      });
+
+      // Optionally upload the image to Firestore or Firebase Storage
+      await _uploadProfileImage();
+    }
+  }
+
+  // Upload the profile image (Firebase Storage integration required)
+  Future<void> _uploadProfileImage() async {
+    if (_profileImage != null) {
+      // Mock: Replace with actual Firebase Storage upload and URL retrieval
+      String uploadedImageUrl = "path/to/your/uploaded/image.jpg";
+
+      // Update Firestore with the new image URL
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.userDocId)
+          .update({'ProfileImageUrl': uploadedImageUrl});
+
+      setState(() {
+        profileImageUrl = uploadedImageUrl;
+      });
     }
   }
 
@@ -134,18 +169,33 @@ class _ProfilePageState extends State<ProfilePage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: 20),
-                    // Profile Icon Without Camera Icon
-                    const CircleAvatar(
-                      radius: 50,
-                      backgroundColor: Colors.blue,
+                    GestureDetector(
+                      onTap: _pickImage,
                       child: CircleAvatar(
-                        radius: 48,
-                        backgroundColor: Colors.white,
-                        child: Icon(
-                          Icons.person,
-                          size: 60,
-                          color: Colors.black54,
-                        ),
+                        radius: 50,
+                        backgroundColor: Colors.blue,
+                        backgroundImage: _profileImage != null
+                            ? FileImage(_profileImage!)
+                            : (profileImageUrl.isNotEmpty
+                                ? NetworkImage(profileImageUrl)
+                                    as ImageProvider
+                                : null),
+                        child: _profileImage == null && profileImageUrl.isEmpty
+                            ? const Icon(
+                                Icons.person,
+                                size: 60,
+                                color: Colors.white,
+                              )
+                            : null,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    TextButton.icon(
+                      onPressed: _pickImage,
+                      icon: const Icon(Icons.camera_alt, color: Colors.blue),
+                      label: const Text(
+                        "Change Profile Picture",
+                        style: TextStyle(color: Colors.blue),
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -168,7 +218,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               icNo: icNo,
                               phone: phone,
                               address: address,
-                              userDocId: widget.userDocId, // FIX HERE
+                              userDocId: widget.userDocId,
                             ),
                           ),
                         );
