@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eduregistryselab/student/profile.dart';
 
 class EditProfilePage extends StatefulWidget {
   final String name;
@@ -52,14 +53,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
       DocumentSnapshot userDoc =
           await _firestore.collection('users').doc(widget.userDocId).get();
 
-      if (userDoc.exists && userDoc['matricNo'] == widget.matricNo) {
+      if (userDoc.exists && userDoc['MatricNo'] == widget.matricNo) {
         setState(() {
-          nameController.text = userDoc['name'];
-          classController.text = userDoc['className'];
-          matricNoController.text = userDoc['matricNo'];
-          icNoController.text = userDoc['icNo'];
-          phoneNoController.text = userDoc['phone'];
-          addressController.text = userDoc['address'];
+          nameController.text = userDoc['Name'];
+          classController.text = userDoc['Class'];
+          matricNoController.text = userDoc['MatricNo'];
+          icNoController.text = userDoc['IC'];
+          phoneNoController.text = userDoc['NoPhone'];
+          addressController.text = userDoc['Address'];
         });
       }
     } catch (e) {
@@ -69,19 +70,22 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   void _saveProfile() async {
     final updatedData = {
-      'name': nameController.text,
-      'className': classController.text,
-      'matricNo': matricNoController.text,
-      'icNo': icNoController.text,
-      'phone': phoneNoController.text,
-      'address': addressController.text,
+      'Name': nameController.text,
+      'Class': classController.text,
+      'MatricNo': matricNoController.text,
+      'IC': icNoController.text,
+      'NoPhone': phoneNoController.text,
+      'Address': addressController.text,
     };
 
     try {
+      // Update Firestore document with the new data
       await _firestore
           .collection('users')
           .doc(widget.userDocId)
           .update(updatedData);
+
+      // Navigate back to the previous page with updated data
       Navigator.pop(context, updatedData);
     } catch (e) {
       print("Error updating profile: $e");
@@ -106,7 +110,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ProfilePage(
+                        userDocId: widget.userDocId,
+                      )),
+            );
           },
         ),
       ),

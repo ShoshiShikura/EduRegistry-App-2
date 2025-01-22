@@ -64,57 +64,61 @@ class HomePage extends StatelessWidget {
             },
           ),
           actions: [
-  FutureBuilder<DocumentSnapshot>(
-    future: FirebaseFirestore.instance
-        .collection('users')
-        .doc(userDocId)
-        .get(),
-    builder: (context, snapshot) {
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        // Display a placeholder while loading
-        return const CircleAvatar(
-          radius: 15,
-          backgroundColor: Colors.grey,
-        );
-      } else if (snapshot.hasError || !snapshot.hasData || !snapshot.data!.exists) {
-        // Error or document doesn't exist
-        return const CircleAvatar(
-          radius: 15,
-          backgroundColor: Colors.grey,
-          child: Icon(Icons.person, size: 15, color: Colors.white),
-        );
-      } else {
-        // Access data safely
-        final data = snapshot.data?.data() as Map<String, dynamic>?; // Safely cast to Map
-        final profilePicUrl = data?['profilePicUrl']; // Access field
+            FutureBuilder<DocumentSnapshot>(
+              future: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(userDocId)
+                  .get(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  // Display a placeholder while loading
+                  return const CircleAvatar(
+                    radius: 15,
+                    backgroundColor: Colors.grey,
+                  );
+                } else if (snapshot.hasError ||
+                    !snapshot.hasData ||
+                    !snapshot.data!.exists) {
+                  // Error or document doesn't exist
+                  return const CircleAvatar(
+                    radius: 15,
+                    backgroundColor: Colors.grey,
+                    child: Icon(Icons.person, size: 15, color: Colors.white),
+                  );
+                } else {
+                  // Access data safely
+                  final data = snapshot.data?.data()
+                      as Map<String, dynamic>?; // Safely cast to Map
+                  final profilePicUrl =
+                      data?['ProfileImageUrl']; // Access field
 
-        return GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ProfilePage(userDocId: userDocId),
-              ),
-            );
-          },
-          child: CircleAvatar(
-            radius: 15,
-            backgroundImage: profilePicUrl != null
-                ? NetworkImage(profilePicUrl)
-                : null,
-            backgroundColor: Colors.grey,
-            child: profilePicUrl == null
-                ? const Icon(Icons.person, size: 15, color: Colors.white)
-                : null,
-          ),
-        );
-      }
-    },
-  ),
-  const SizedBox(width: 10),
-],
-
-
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ProfilePage(userDocId: userDocId),
+                        ),
+                      );
+                    },
+                    child: CircleAvatar(
+                      radius: 15,
+                      backgroundImage: profilePicUrl != null
+                          ? NetworkImage(profilePicUrl)
+                          : null,
+                      backgroundColor: Colors.grey,
+                      child: profilePicUrl == null
+                          ? const Icon(Icons.person,
+                              size: 15, color: Colors.white)
+                          : null,
+                    ),
+                  );
+                }
+              },
+            ),
+            const SizedBox(width: 10),
+          ],
         ),
         body: SafeArea(
           child: SingleChildScrollView(

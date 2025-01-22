@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:uuid/uuid.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'edit_profile.dart';
@@ -45,8 +47,8 @@ class _ProfilePageState extends State<ProfilePage> {
           setState(() {
             name = userDoc["Name"] ?? "N/A";
             className = userDoc["Class"] ?? "N/A";
-            matricNo = userDoc["Matric No"] ?? "N/A";
-            icNo = userDoc["IC No"] ?? "N/A";
+            matricNo = userDoc["MatricNo"] ?? "N/A";
+            icNo = userDoc["IC"] ?? "N/A";
             phone = userDoc["NoPhone"] ?? "N/A";
             address = userDoc["Address"] ?? "N/A";
             profileImageUrl = userDoc["ProfileImageUrl"] ?? "";
@@ -85,18 +87,42 @@ class _ProfilePageState extends State<ProfilePage> {
   // Upload the profile image (Firebase Storage integration required)
   Future<void> _uploadProfileImage() async {
     if (_profileImage != null) {
-      // Mock: Replace with actual Firebase Storage upload and URL retrieval
-      String uploadedImageUrl = "path/to/your/uploaded/image.jpg";
+      try {
+        // Generate a unique file name
+        String fileName = const Uuid().v4();
 
-      // Update Firestore with the new image URL
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(widget.userDocId)
-          .update({'ProfileImageUrl': uploadedImageUrl});
+        // Get a reference to Firebase Storage
+        FirebaseStorage storage = FirebaseStorage.instance;
+        Reference storageRef = storage.ref().child('profile_images/$fileName');
 
-      setState(() {
-        profileImageUrl = uploadedImageUrl;
-      });
+        // Upload the file to Firebase Storage
+        UploadTask uploadTask = storageRef.putFile(_profileImage!);
+        TaskSnapshot snapshot = await uploadTask;
+
+        // Retrieve the download URL
+        String uploadedImageUrl = await snapshot.ref.getDownloadURL();
+
+        // Update Firestore with the new image URL
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(widget.userDocId)
+            .update({'ProfileImageUrl': uploadedImageUrl});
+
+        // Update local state with the new image URL
+        setState(() {
+          profileImageUrl = uploadedImageUrl;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text("Profile picture updated successfully!")),
+        );
+      } catch (e) {
+        print("Error uploading profile image: $e");
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Failed to update profile picture.")),
+        );
+      }
     }
   }
 
@@ -177,8 +203,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         backgroundImage: _profileImage != null
                             ? FileImage(_profileImage!)
                             : (profileImageUrl.isNotEmpty
-                                ? NetworkImage(profileImageUrl)
-                                    as ImageProvider
+                                ? NetworkImage(profileImageUrl) as ImageProvider
                                 : null),
                         child: _profileImage == null && profileImageUrl.isEmpty
                             ? const Icon(
@@ -223,16 +248,20 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         );
 
-                        if (result != null) {
+                        // If result is not null, update the local state
+                        if (result != null && result is Map<String, dynamic>) {
                           setState(() {
-                            name = result['name'];
-                            className = result['className'];
-                            matricNo = result['matricNo'];
-                            icNo = result['icNo'];
-                            phone = result['phone'];
-                            address = result['address'];
+                            name = result['Name'] ?? name;
+                            className = result['Class'] ?? className;
+                            matricNo = result['MatricNo'] ?? matricNo;
+                            icNo = result['IC'] ?? icNo;
+                            phone = result['NoPhone'] ?? phone;
+                            address = result['Address'] ?? address;
                           });
                         }
+
+                        // Optionally re-fetch data for consistency
+                        await _fetchUserData();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,
