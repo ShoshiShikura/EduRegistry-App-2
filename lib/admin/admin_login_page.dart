@@ -39,7 +39,7 @@ class AdminLoginPageState extends State<AdminLoginPage> {
       // Query Firestore for user credentials
       final QuerySnapshot query = await _firestore
           .collection('users')
-          .where('Matric No', isEqualTo: enteredMatric)
+          .where('MatricNo', isEqualTo: enteredMatric)
           .where('Password', isEqualTo: enteredPassword)
           .get();
 
