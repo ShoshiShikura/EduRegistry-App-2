@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'add_merit.dart';
 import 'package:eduregistryselab/student/appointment.dart';
 import 'chart_page.dart';
@@ -18,11 +19,6 @@ class HomePageAdmin extends StatefulWidget {
 class _HomePageAdminState extends State<HomePageAdmin> {
   int _currentIndex = 0;
 
-  Future<String> _fetchUserName() async {
-    // Mocking a user fetch call
-    return Future.value("Student");
-  }
-
   late List<Widget> _pages;
 
   @override
@@ -38,87 +34,156 @@ class _HomePageAdminState extends State<HomePageAdmin> {
     ];
   }
 
+  Future<String> _fetchUserName() async {
+    try {
+      final docSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.userDocId)
+          .get();
+
+      if (docSnapshot.exists) {
+        return docSnapshot.data()?['Name'] ?? 'Admin'; // Fetch 'Name' field
+      } else {
+        throw Exception("User document not found.");
+      }
+    } catch (e) {
+      throw Exception("Error fetching user data: $e");
+    }
+  }
+
+  Future<bool> _onWillPop() async {
+    return false; // Disables back button functionality
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFEAF3FF),
-      appBar: _currentIndex == 0
-          ? AppBar(
-              backgroundColor: Colors.white,
-              elevation: 0,
-              centerTitle: false,
-              automaticallyImplyLeading: false,
-              title: FutureBuilder<String>(
-                future: _fetchUserName(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Text(
-                      'Hi, Student',
-                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                    );
-                  } else {
-                    return Text(
-                      'Hi, ${snapshot.data}',
-                      style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                    );
-                  }
-                },
-              ),
-              actions: [
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AdminProfilePage(userDocId: widget.userDocId),
-                      ),
-                    );
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        backgroundColor: const Color(0xFFEAF3FF),
+        appBar: _currentIndex == 0
+            ? AppBar(
+                backgroundColor: Colors.white,
+                elevation: 0,
+                centerTitle: false,
+                automaticallyImplyLeading: false,
+                title: FutureBuilder<String>(
+                  future: _fetchUserName(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Text(
+                        'Hi, Admin',
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.bold),
+                      );
+                    } else if (snapshot.hasError) {
+                      return const Text(
+                        'Hi, Admin',
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.bold),
+                      );
+                    } else {
+                      return Text(
+                        'Hi, ${snapshot.data}',
+                        style: const TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.bold),
+                      );
+                    }
                   },
-                  child: CircleAvatar(
-                    radius: 16,
-                    backgroundImage: AssetImage('assets/profile_pic.jpg'),
-                  ),
                 ),
-                const SizedBox(width: 16),
-              ],
-            )
-          : null,
-      body: SafeArea(
-        child: IndexedStack(
-          index: _currentIndex,
-          children: _pages,
+                actions: [
+                  FutureBuilder<DocumentSnapshot>(
+                    future: FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(widget.userDocId)
+                        .get(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircleAvatar(
+                          radius: 15,
+                          backgroundColor: Colors.grey,
+                        );
+                      } else if (snapshot.hasError ||
+                          !snapshot.hasData ||
+                          !snapshot.data!.exists) {
+                        return const CircleAvatar(
+                          radius: 15,
+                          backgroundColor: Colors.grey,
+                          child:
+                              Icon(Icons.person, size: 15, color: Colors.white),
+                        );
+                      } else {
+                        final data = snapshot.data?.data()
+                            as Map<String, dynamic>?; // Safely cast to Map
+                        final profilePicUrl =
+                            data?['ProfileImageUrl']; // Access field
+
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AdminProfilePage(
+                                    userDocId: widget.userDocId),
+                              ),
+                            );
+                          },
+                          child: CircleAvatar(
+                            radius: 15,
+                            backgroundImage: profilePicUrl != null
+                                ? NetworkImage(profilePicUrl)
+                                : null,
+                            backgroundColor: Colors.grey,
+                            child: profilePicUrl == null
+                                ? const Icon(Icons.person,
+                                    size: 15, color: Colors.white)
+                                : null,
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                  const SizedBox(width: 10),
+                ],
+              )
+            : null,
+        body: SafeArea(
+          child: IndexedStack(
+            index: _currentIndex,
+            children: _pages,
+          ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart),
-            label: 'Chart',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: 'Notification',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.chat),
-            label: 'Chat',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          currentIndex: _currentIndex,
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.bar_chart),
+              label: 'Chart',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.notifications),
+              label: 'Notification',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.chat),
+              label: 'Chat',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+        ),
       ),
     );
   }

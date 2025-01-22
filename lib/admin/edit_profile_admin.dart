@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eduregistryselab/student/profile.dart';
 
 class AdminEditProfilePage extends StatefulWidget {
-  final String userDocId;
   final String name;
   final String className;
-  final String matricNumber;
-  final String icNumber;
+  final String matricNo;
+  final String icNo;
   final String phone;
   final String address;
+  final String userDocId; // New parameter for Firestore document ID
 
   const AdminEditProfilePage({
     super.key,
-    required this.userDocId,
     required this.name,
     required this.className,
-    required this.matricNumber,
-    required this.icNumber,
+    required this.matricNo,
+    required this.icNo,
     required this.phone,
     required this.address,
+    required this.userDocId,
   });
 
   @override
@@ -28,9 +29,9 @@ class AdminEditProfilePage extends StatefulWidget {
 class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
   late TextEditingController nameController;
   late TextEditingController classController;
-  late TextEditingController matricNumberController;
-  late TextEditingController icNumberController;
-  late TextEditingController phoneController;
+  late TextEditingController matricNoController;
+  late TextEditingController icNoController;
+  late TextEditingController phoneNoController;
   late TextEditingController addressController;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -39,25 +40,53 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
     super.initState();
     nameController = TextEditingController(text: widget.name);
     classController = TextEditingController(text: widget.className);
-    matricNumberController = TextEditingController(text: widget.matricNumber);
-    icNumberController = TextEditingController(text: widget.icNumber);
-    phoneController = TextEditingController(text: widget.phone);
+    matricNoController = TextEditingController(text: widget.matricNo);
+    icNoController = TextEditingController(text: widget.icNo);
+    phoneNoController = TextEditingController(text: widget.phone);
     addressController = TextEditingController(text: widget.address);
+
+    _fetchProfileData(); // Fetch Firestore data
+  }
+
+  void _fetchProfileData() async {
+    try {
+      DocumentSnapshot userDoc =
+          await _firestore.collection('users').doc(widget.userDocId).get();
+
+      if (userDoc.exists && userDoc['MatricNo'] == widget.matricNo) {
+        setState(() {
+          nameController.text = userDoc['Name'];
+          classController.text = userDoc['Class'];
+          matricNoController.text = userDoc['MatricNo'];
+          icNoController.text = userDoc['IC'];
+          phoneNoController.text = userDoc['NoPhone'];
+          addressController.text = userDoc['Address'];
+        });
+      }
+    } catch (e) {
+      print("Error fetching profile data: $e");
+    }
   }
 
   void _saveProfile() async {
-    final updatedProfile = {
-      'name': nameController.text,
-      'className': classController.text,
-      'matricNumber': matricNumberController.text,
-      'icNumber': icNumberController.text,
-      'phone': phoneController.text,
-      'address': addressController.text,
+    final updatedData = {
+      'Name': nameController.text,
+      'Class': classController.text,
+      'MatricNo': matricNoController.text,
+      'IC': icNoController.text,
+      'NoPhone': phoneNoController.text,
+      'Address': addressController.text,
     };
 
     try {
-      await _firestore.collection('users').doc(widget.userDocId).update(updatedProfile);
-      Navigator.pop(context, updatedProfile);
+      // Update Firestore document with the new data
+      await _firestore
+          .collection('users')
+          .doc(widget.userDocId)
+          .update(updatedData);
+
+      // Navigate back to the previous page with updated data
+      Navigator.pop(context, updatedData);
     } catch (e) {
       print("Error updating profile: $e");
     }
@@ -72,13 +101,22 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
         elevation: 0,
         title: const Text(
           "Edit Profile",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ProfilePage(
+                        userDocId: widget.userDocId,
+                      )),
+            );
           },
         ),
       ),
@@ -86,38 +124,37 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 20),
               _buildTextField(controller: nameController, label: "Name"),
               const SizedBox(height: 10),
               _buildTextField(controller: classController, label: "Class"),
               const SizedBox(height: 10),
-              _buildTextField(controller: matricNumberController, label: "Matric No"),
+              _buildTextField(
+                  controller: matricNoController, label: "Matric No"),
               const SizedBox(height: 10),
-              _buildTextField(controller: icNumberController, label: "IC No"),
+              _buildTextField(controller: icNoController, label: "IC No"),
               const SizedBox(height: 10),
-              _buildTextField(controller: phoneController, label: "Phone No"),
+              _buildTextField(controller: phoneNoController, label: "Phone No"),
               const SizedBox(height: 10),
               _buildTextField(controller: addressController, label: "Address"),
               const Spacer(),
-              Center(
-                child: ElevatedButton(
-                  onPressed: _saveProfile,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 64.0),
+              ElevatedButton(
+                onPressed: _saveProfile,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
                   ),
-                  child: const Text(
-                    "Save",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 16.0, horizontal: 64.0),
+                ),
+                child: const Text(
+                  "Save",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -125,16 +162,12 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
     );
   }
 
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-  }) {
+  Widget _buildTextField(
+      {required TextEditingController controller, required String label}) {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: const TextStyle(color: Colors.black87),
-        hintStyle: const TextStyle(color: Colors.grey),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
