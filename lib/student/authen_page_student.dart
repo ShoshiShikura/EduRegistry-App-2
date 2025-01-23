@@ -15,13 +15,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.light().copyWith(
         scaffoldBackgroundColor: const Color(0xFFFFF8F5),
       ),
-      home: const AuthenPagestudent(),
+      home: const AuthenPageStudent(),
     );
   }
 }
 
-class AuthenPagestudent extends StatelessWidget {
-  const AuthenPagestudent({super.key});
+class AuthenPageStudent extends StatelessWidget {
+  const AuthenPageStudent({super.key});
 
   void _verify(BuildContext context) {
     // Show a SnackBar as a popup message

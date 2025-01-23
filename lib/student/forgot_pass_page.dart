@@ -34,7 +34,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          AuthenPagestudent()), // Navigate to VerificationPage
+                          AuthenPageStudent()), // Navigate to VerificationPage
                 );
               },
               child: Text("OK"),
