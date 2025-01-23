@@ -39,16 +39,27 @@ class GradePage extends StatelessWidget {
                 const SizedBox(height: 20),
 
                 // Ranking List fetched from Firestore
-                FutureBuilder<QuerySnapshot>(
-                  future: FirebaseFirestore.instance
+                StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
                       .collection('users')
-                      .where('Role', isEqualTo: 'Student')
-                      .orderBy('TotalMerit', descending: true)
-                      .limit(15)
-                      .get(),
+                      .where('Role',
+                          isEqualTo: 'Student') // Filter for students only
+                      .orderBy('TotalMerit', descending: true) // Sort by merit
+                      .limit(15) // Limit to top 15
+                      .snapshots(), // Real-time stream
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());
+                    }
+
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Text(
+                          'Error fetching data: ${snapshot.error}',
+                          style:
+                              const TextStyle(color: Colors.red, fontSize: 16),
+                        ),
+                      );
                     }
 
                     if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
@@ -66,10 +77,12 @@ class GradePage extends StatelessWidget {
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: students.length,
                       itemBuilder: (context, index) {
-                        final student = students[index];
-                        final name = student['Name'] ?? 'Unknown';
-                        final totalMerit =
-                            student['TotalMerit']?.toString() ?? '0';
+                        final studentData = students[index].data()
+                            as Map<String, dynamic>; // Cast data to Map
+                        final name = studentData['Name'] ?? 'Unknown';
+                        final totalMerit = studentData['TotalMerit'] != null
+                            ? studentData['TotalMerit'].toString()
+                            : '0'; // Handle missing or null TotalMerit
 
                         return GestureDetector(
                           onTap: () {
