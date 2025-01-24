@@ -43,7 +43,7 @@ class _StatisticPageState extends State<StatisticPage> {
       final random = Random();
       return {
         "MatricNo": "MATRIC-${1000 + index}",
-        "MeritValue": random.nextInt(50) - 25, // Values from -25 to 25
+        "MeritValue": random.nextInt(200), // Values from 0 to 199
         "ReviewComments": "Sample comment ${index + 1}",
         "Timestamp": DateTime(
           2023,
@@ -67,6 +67,18 @@ class _StatisticPageState extends State<StatisticPage> {
     super.initState();
     // Uncomment the next line to populate Firestore with preset data
     // addPresetMeritData();
+  }
+
+  Color getColorForMerit(int meritValue) {
+    if (meritValue < 10) {
+      return Colors.red[100]!; // Light red
+    } else if (meritValue >= 11 && meritValue <= 50) {
+      return Colors.yellow[100]!; // Light yellow
+    } else if (meritValue >= 51 && meritValue <= 150) {
+      return Colors.green[100]!; // Light green
+    } else {
+      return Colors.purple[100]!; // Light purple
+    }
   }
 
   @override
@@ -110,17 +122,18 @@ class _StatisticPageState extends State<StatisticPage> {
                           itemBuilder: (context, index) {
                             final data = meritData[index];
                             return Card(
+                              color: getColorForMerit(data['MeritValue']),
                               child: ListTile(
                                 title: Text("MatricNo: ${data['MatricNo']}"),
-                                subtitle:
-                                    Text("Comment: ${data['ReviewComments']}"),
+                                subtitle: Text("Comment: ${data['ReviewComments']}"),
                                 trailing: Text("Merit: ${data['MeritValue']}"),
                               ),
                             );
                           },
                         )
                       : Center(
-                          child: Text('No data available for $selectedMonth.'));
+                          child: Text('No data available for $selectedMonth.'),
+                        );
                 } else {
                   return Center(child: Text('No merit data found.'));
                 }

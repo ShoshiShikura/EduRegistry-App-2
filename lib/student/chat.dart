@@ -2,7 +2,7 @@ import 'package:eduregistryselab/admin/real_chat.dart';
 import 'package:flutter/material.dart';
 
 class ChatPage extends StatelessWidget {
-  const ChatPage({super.key});
+  const ChatPage({super.key, required String userDocId});
 
   @override
   Widget build(BuildContext context) {
