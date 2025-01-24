@@ -13,16 +13,16 @@ class _AddMeritState extends State<AddMerit> {
   final TextEditingController _reviewController = TextEditingController();
 
   final Map<String, int> _goodDeeds = {
-    'Clean the desk': 1,
-    'Help a friend': 2,
-    'Submit homework on time': 3,
-    'Participate in class': 2,
-    'Volunteer for tasks': 5,
-    'Organize study group': 4,
-    'Help teacher': 3,
-    'Recycle waste': 1,
-    'Show kindness': 2,
-    'Maintain class decorum': 3
+    'Clean the desk': 8,
+    'Help a friend': 20,
+    'Submit homework on time': 15,
+    'Participate in class': 30,
+    'Volunteer for tasks': 55,
+    'Organize study group': 100,
+    'Help teacher': 180,
+    'Recycle waste': 12,
+    'Show kindness': 32,
+    'Maintain class decorum': 15
   }; // Good deeds and merit values
 
   String? _selectedDeed;
