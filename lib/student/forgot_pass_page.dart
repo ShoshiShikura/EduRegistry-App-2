@@ -1,6 +1,6 @@
 import 'package:eduregistryselab/student/authen_page_student.dart';
 import 'package:flutter/material.dart';
-import 'student_signup_page.dart'; // Ensure studentSignupPage is imported
+//import 'student_signup_page.dart'; // Ensure studentSignupPage is imported
 import 'package:eduregistryselab/student/login_page.dart'; // Make sure to import your studentLoginPage here
 
 void main() {
@@ -69,7 +69,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     opacity: 0.30,
                     child: Container(
                       width: 370,
-                      height: 401,
+                      height: 350,
                       clipBehavior: Clip.antiAlias,
                       decoration: ShapeDecoration(
                         color: Color(0xFFDBDBDB),
@@ -106,87 +106,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     ),
                   ),
                 ),
-                Positioned(
-                  left: 136,
-                  top: 569,
-                  child: GestureDetector(
-                    onTap: () {
-                      // Navigate to the studentSignupPage when clicked
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => studentSignupPage()),
-                      );
-                    },
-                    child: Container(
-                      width: 155,
-                      height: 46,
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            left: 0,
-                            top: 0,
-                            child: Container(
-                              width: 155,
-                              height: 46,
-                              decoration: ShapeDecoration(
-                                color: Color(0xFFFF5740),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                shadows: [
-                                  BoxShadow(
-                                    color: Color(0x4C000000),
-                                    blurRadius: 8,
-                                    offset: Offset(1, 2),
-                                    spreadRadius: 0,
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            left: 0,
-                            top: 12,
-                            child: SizedBox(
-                              width: 155,
-                              child: Text(
-                                'Sign Up',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontFamily: 'Jost',
-                                  fontWeight: FontWeight.w600,
-                                  decoration: TextDecoration.none,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                
                 Positioned(
                   left: 136,
                   top: 329,
                   child: Text(
                     'Enter Email Address',
-                    style: TextStyle(
-                      color: Color(0xFF545454),
-                      fontSize: 16,
-                      fontFamily: 'Mulish',
-                      fontWeight: FontWeight.w700,
-                      decoration: TextDecoration.none,
-                    ),
-                  ),
-                ),
-                Positioned(
-                  left: (screenWidth - 185) / 2, // Centered horizontally
-                  top: 529,
-                  child: Text(
-                    'Do you have an account?',
                     style: TextStyle(
                       color: Color(0xFF545454),
                       fontSize: 16,

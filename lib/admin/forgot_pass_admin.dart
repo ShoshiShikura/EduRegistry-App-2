@@ -1,21 +1,21 @@
 import 'package:eduregistryselab/admin/authen_page_admin.dart';
 import 'package:flutter/material.dart';
-import 'admin_signup_page.dart';  // Ensure AdminSignupPage is imported
-import 'admin_login_page.dart';  // Make sure to import your AdminLoginPage here
+//import 'student_signup_page.dart'; // Ensure studentSignupPage is imported
+import 'package:eduregistryselab/student/login_page.dart'; // Make sure to import your studentLoginPage here
 
 void main() {
-  runApp(MaterialApp(home: ForgotPasswordAdminPage()));
+  runApp(MaterialApp(home: ForgotPasswordPage()));
 }
 
-class ForgotPasswordAdminPage extends StatefulWidget {
-  const ForgotPasswordAdminPage({super.key});
+class ForgotPasswordPage extends StatefulWidget {
+  const ForgotPasswordPage({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
-  _ForgotPasswordAdminPageState createState() => _ForgotPasswordAdminPageState();
+  _ForgotPasswordPageState createState() => _ForgotPasswordPageState();
 }
 
-class _ForgotPasswordAdminPageState extends State<ForgotPasswordAdminPage> {
+class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final TextEditingController _emailController = TextEditingController();
 
   // Function to show success dialog and navigate to VerificationPage
@@ -32,7 +32,9 @@ class _ForgotPasswordAdminPageState extends State<ForgotPasswordAdminPage> {
                 Navigator.of(context).pop(); // Close the dialog
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => AuthenPageAdmin()), // Navigate to VerificationPage
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          AuthenPageAdmin()), // Navigate to VerificationPage
                 );
               },
               child: Text("OK"),
@@ -45,7 +47,6 @@ class _ForgotPasswordAdminPageState extends State<ForgotPasswordAdminPage> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       appBar: AppBar(
@@ -67,7 +68,7 @@ class _ForgotPasswordAdminPageState extends State<ForgotPasswordAdminPage> {
                     opacity: 0.30,
                     child: Container(
                       width: 370,
-                      height: 401,
+                      height: 350,
                       clipBehavior: Clip.antiAlias,
                       decoration: ShapeDecoration(
                         color: Color(0xFFDBDBDB),
@@ -104,67 +105,7 @@ class _ForgotPasswordAdminPageState extends State<ForgotPasswordAdminPage> {
                     ),
                   ),
                 ),
-                Positioned(
-                  left: 136,
-                  top: 569,
-                  child: GestureDetector(
-                    onTap: () {
-                      // Navigate to the AdminSignupPage when clicked
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => AdminSignupPage()),
-                      );
-                    },
-                    child: Container(
-                      width: 155,
-                      height: 46,
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            left: 0,
-                            top: 0,
-                            child: Container(
-                              width: 155,
-                              height: 46,
-                              decoration: ShapeDecoration(
-                                color: Color(0xFFFF5740),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                shadows: [
-                                  BoxShadow(
-                                    color: Color(0x4C000000),
-                                    blurRadius: 8,
-                                    offset: Offset(1, 2),
-                                    spreadRadius: 0,
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            left: 0,
-                            top: 12,
-                            child: SizedBox(
-                              width: 155,
-                              child: Text(
-                                'Sign Up',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontFamily: 'Jost',
-                                  fontWeight: FontWeight.w600,
-                                  decoration: TextDecoration.none,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                
                 Positioned(
                   left: 136,
                   top: 329,
@@ -179,29 +120,16 @@ class _ForgotPasswordAdminPageState extends State<ForgotPasswordAdminPage> {
                     ),
                   ),
                 ),
-                Positioned(
-                  left: (screenWidth - 185) / 2, // Centered horizontally
-                  top: 529,
-                  child: Text(
-                    'Do you have an account?',
-                    style: TextStyle(
-                      color: Color(0xFF545454),
-                      fontSize: 16,
-                      fontFamily: 'Mulish',
-                      fontWeight: FontWeight.w700,
-                      decoration: TextDecoration.none,
-                    ),
-                  ),
-                ),
+                
                 Positioned(
                   left: 166,
                   top: 419,
                   child: GestureDetector(
                     onTap: () {
-                      // Navigate to the AdminLoginPage when clicked
+                      // Navigate to the studentLoginPage when clicked
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => AdminLoginPage()),
+                        MaterialPageRoute(builder: (context) => LoginPage()),
                       );
                     },
                     child: Opacity(
@@ -254,7 +182,8 @@ class _ForgotPasswordAdminPageState extends State<ForgotPasswordAdminPage> {
                               decoration: InputDecoration(
                                 hintText: 'Enter your email',
                                 border: InputBorder.none,
-                                contentPadding: EdgeInsets.symmetric(horizontal: 12),
+                                contentPadding:
+                                    EdgeInsets.symmetric(horizontal: 12),
                               ),
                             ),
                           ),

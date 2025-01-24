@@ -1,11 +1,9 @@
 import 'package:eduregistryselab/admin/home_page_admin.dart' as teacher_home;
 import 'package:eduregistryselab/superadmin/superadmin.dart' as superadmin_home;
+import 'package:eduregistryselab/admin/forgot_pass_admin.dart'; // Import the ForgotPasswordPage
 import 'package:flutter/material.dart';
-import 'package:eduregistryselab/student/forgot_pass_page.dart'; // Import the ForgotPasswordPage
-// import 'package:eduregistryselab/admin/forgot_pass_admin.dart'; // Import the Forgot Password Admin Page
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // Import this package
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AdminLoginPage extends StatefulWidget {
   const AdminLoginPage({super.key});
@@ -36,7 +34,6 @@ class AdminLoginPageState extends State<AdminLoginPage> {
     });
 
     try {
-      // Query Firestore for user credentials
       final QuerySnapshot query = await _firestore
           .collection('users')
           .where('MatricNo', isEqualTo: enteredMatric)
@@ -46,21 +43,19 @@ class AdminLoginPageState extends State<AdminLoginPage> {
       if (query.docs.isNotEmpty) {
         final user = query.docs.first.data() as Map<String, dynamic>;
         final String role = user['Role'] ?? '';
-        final String userDocId = query.docs.first.id; // Get document ID
+        final String userDocId = query.docs.first.id;
 
-        // Save matric number and role to SharedPreferences
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('matric', enteredMatric);
         await prefs.setString('role', role);
-        await prefs.setString('userDocId', userDocId); // Save document ID
+        await prefs.setString('userDocId', userDocId);
 
-        // Navigate based on the user's role
         if (role == 'Admin') {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (context) => teacher_home.HomePageAdmin(
-                userDocId: userDocId, // Pass userDocId
+                userDocId: userDocId,
               ),
             ),
           );
@@ -69,7 +64,7 @@ class AdminLoginPageState extends State<AdminLoginPage> {
             context,
             MaterialPageRoute(
               builder: (context) => superadmin_home.SuperAdminPage(
-                userDocId: userDocId, // Pass userDocId
+                userDocId: userDocId,
               ),
             ),
           );
@@ -134,10 +129,10 @@ class AdminLoginPageState extends State<AdminLoginPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Image.asset(
-                                'assets/logo.png', // Add the path to your logo image
-                                height: 30, // Adjust size accordingly
+                                'assets/logo.png',
+                                height: 30,
                               ),
-                              const SizedBox(width: 8), // Space between logo and text
+                              const SizedBox(width: 8),
                               const Text(
                                 'EduRegistry',
                                 style: TextStyle(
@@ -278,21 +273,22 @@ class AdminLoginPageState extends State<AdminLoginPage> {
                     left: 0,
                     top: 635,
                     right: 0,
-                    child: Center(
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ForgotPasswordPage()),
-                          );
-                        },
-                        child: const Text(
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ForgotPasswordPage(),
+                          ),
+                        );
+                      },
+                      child: const Center(
+                        child: Text(
                           'Forgot Password?',
                           style: TextStyle(
-                            color: Color(0xFF0961F5),
+                            color: Colors.blue,
                             fontSize: 14,
-                            fontWeight: FontWeight.w600,
+                            decoration: TextDecoration.underline,
                           ),
                         ),
                       ),
