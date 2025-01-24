@@ -118,22 +118,24 @@ class AdminLoginPageState extends State<AdminLoginPage> {
               height: MediaQuery.of(context).size.height,
               child: Stack(
                 children: [
+                  // Logo with text
                   Positioned(
                     left: 0,
                     top: 150,
                     right: 0,
                     child: Center(
-                      child: Column(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                'assets/logo.png',
-                                height: 30,
-                              ),
-                              const SizedBox(width: 8),
-                              const Text(
+                          // Logo next to EduRegistry text
+                          Image.asset(
+                            'assets/logo.png', // Ensure the path is correct
+                            height: 50, // Adjust the size of the logo
+                          ),
+                          const SizedBox(width: 10), // Space between logo and text
+                          Column(
+                            children: const [
+                              Text(
                                 'EduRegistry',
                                 style: TextStyle(
                                   color: Color(0xFF332DA1),
@@ -141,15 +143,15 @@ class AdminLoginPageState extends State<AdminLoginPage> {
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
+                              Text(
+                                'Track. Analyze. Empower.',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                             ],
-                          ),
-                          const Text(
-                            'Track. Analyze. Empower.',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                            ),
                           ),
                         ],
                       ),
