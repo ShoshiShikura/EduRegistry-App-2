@@ -268,49 +268,43 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   ),
                 ),
                 Positioned(
-                  left: 182,
-                  top: 116,
-                  child: Container(
-                    width: 154,
-                    height: 52,
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          left: 0,
-                          top: 35,
-                          child: SizedBox(
-                            width: 154,
-                            child: Text(
-                              'LEARN FROM HOME',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 11,
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w600,
-                                decoration: TextDecoration.none,
+                    left: 0,
+                    top: 150,
+                    right: 0,
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Logo next to EduRegistry text
+                          Image.asset(
+                            'assets/logo.png', // Make sure the path is correct
+                            height: 50, // Adjust the size of the logo
+                          ),
+                          SizedBox(width: 10), // Space between logo and text
+                          Column(
+                            children: const [
+                              Text(
+                                'EduRegistry',
+                                style: TextStyle(
+                                  color: Color(0xFF332DA1),
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
-                            ),
+                              Text(
+                                'Track. Analyze. Empower.',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                        Positioned(
-                          left: 1,
-                          top: 0,
-                          child: Text(
-                            'EduRegistry',
-                            style: TextStyle(
-                              color: Color(0xFF332DA1),
-                              fontSize: 24,
-                              fontFamily: 'Jost',
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 1.20,
-                              decoration: TextDecoration.none,
-                            ),
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
           ),

@@ -60,30 +60,42 @@ class AuthenPageAdmin extends StatelessWidget {
               child: Column(
                 children: [
                   const SizedBox(height: 80), // Adjusts the overall top spacing
-                  const Center(
-                    child: Column(
-                      children: [
-                        Text(
-                          'EduRegistry',
-                          style: TextStyle(
-                            color: Color(0xFF332DA1),
-                            fontSize: 24,
-                            fontFamily: 'Jost',
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 1.20,
+                  Positioned(
+                    left: 0,
+                    top: 150,
+                    right: 0,
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Logo next to EduRegistry text
+                          Image.asset(
+                            'assets/logo.png', // Make sure the path is correct
+                            height: 50, // Adjust the size of the logo
                           ),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          'LEARN FROM HOME',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 11,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
+                          SizedBox(width: 10), // Space between logo and text
+                          Column(
+                            children: const [
+                              Text(
+                                'EduRegistry',
+                                style: TextStyle(
+                                  color: Color(0xFF332DA1),
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Text(
+                                'Track. Analyze. Empower.',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                   const SizedBox(height: 100), // Pushes the box lower

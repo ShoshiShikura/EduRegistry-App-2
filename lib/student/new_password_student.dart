@@ -101,23 +101,34 @@ class NewPasswordState extends State<NewPassword> {
                     top: 150,
                     right: 0,
                     child: Center(
-                      child: Column(
-                        children: const [
-                          Text(
-                            'EduRegistry',
-                            style: TextStyle(
-                              color: Color(0xFF332DA1),
-                              fontSize: 24,
-                              fontWeight: FontWeight.w600,
-                            ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Logo next to EduRegistry text
+                          Image.asset(
+                            'assets/logo.png', // Make sure the path is correct
+                            height: 50, // Adjust the size of the logo
                           ),
-                          Text(
-                            'Track. Analyze. Empower.',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                            ),
+                          SizedBox(width: 10), // Space between logo and text
+                          Column(
+                            children: const [
+                              Text(
+                                'EduRegistry',
+                                style: TextStyle(
+                                  color: Color(0xFF332DA1),
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Text(
+                                'Track. Analyze. Empower.',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),

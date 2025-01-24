@@ -1,7 +1,6 @@
 import 'package:eduregistryselab/student/authen_page_student.dart';
 import 'package:flutter/material.dart';
-//import 'student_signup_page.dart'; // Ensure studentSignupPage is imported
-import 'package:eduregistryselab/student/login_page.dart'; // Make sure to import your studentLoginPage here
+import 'package:eduregistryselab/student/login_page.dart'; // Ensure studentLoginPage is imported
 
 void main() {
   runApp(MaterialApp(home: ForgotPasswordPage()));
@@ -11,7 +10,6 @@ class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _ForgotPasswordPageState createState() => _ForgotPasswordPageState();
 }
 
@@ -47,7 +45,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Forgot Password'),
@@ -105,7 +102,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     ),
                   ),
                 ),
-                
                 Positioned(
                   left: 136,
                   top: 329,
@@ -199,7 +195,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       if (_emailController.text.isNotEmpty) {
                         _showSuccessDialog();
                       } else {
-                        // You can show an error dialog or toast if email is empty
+                        // Handle empty email input
                       }
                     },
                     child: Container(
@@ -253,63 +249,43 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   ),
                 ),
                 Positioned(
-                  left: 128,
-                  top: 260,
-                  child: Text(
-                    'Forgot Password',
-                    style: TextStyle(
-                      color: Color(0xFF202244),
-                      fontSize: 23,
-                      fontFamily: 'Jost',
-                      fontWeight: FontWeight.w600,
-                      decoration: TextDecoration.none,
-                    ),
-                  ),
-                ),
-                Positioned(
-                  left: 182,
-                  top: 116,
-                  child: Container(
-                    width: 154,
-                    height: 52,
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          left: 0,
-                          top: 35,
-                          child: SizedBox(
-                            width: 154,
-                            child: Text(
-                              'LEARN FROM HOME',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 11,
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w600,
-                                decoration: TextDecoration.none,
+                    left: 0,
+                    top: 150,
+                    right: 0,
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Logo next to EduRegistry text
+                          Image.asset(
+                            'assets/logo.png', // Make sure the path is correct
+                            height: 50, // Adjust the size of the logo
+                          ),
+                          SizedBox(width: 10), // Space between logo and text
+                          Column(
+                            children: const [
+                              Text(
+                                'EduRegistry',
+                                style: TextStyle(
+                                  color: Color(0xFF332DA1),
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
-                            ),
+                              Text(
+                                'Track. Analyze. Empower.',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                        Positioned(
-                          left: 1,
-                          top: 0,
-                          child: Text(
-                            'EduRegistry',
-                            style: TextStyle(
-                              color: Color(0xFF332DA1),
-                              fontSize: 24,
-                              fontFamily: 'Jost',
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 1.20,
-                              decoration: TextDecoration.none,
-                            ),
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
           ),
