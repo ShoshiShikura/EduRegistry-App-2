@@ -129,16 +129,26 @@ class AdminLoginPageState extends State<AdminLoginPage> {
                     right: 0,
                     child: Center(
                       child: Column(
-                        children: const [
-                          Text(
-                            'EduRegistry',
-                            style: TextStyle(
-                              color: Color(0xFF332DA1),
-                              fontSize: 24,
-                              fontWeight: FontWeight.w600,
-                            ),
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/logo.png', // Add the path to your logo image
+                                height: 30, // Adjust size accordingly
+                              ),
+                              const SizedBox(width: 8), // Space between logo and text
+                              const Text(
+                                'EduRegistry',
+                                style: TextStyle(
+                                  color: Color(0xFF332DA1),
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
                           ),
-                          Text(
+                          const Text(
                             'Track. Analyze. Empower.',
                             style: TextStyle(
                               color: Colors.black,

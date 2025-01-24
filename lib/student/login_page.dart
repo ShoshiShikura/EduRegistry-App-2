@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:eduregistryselab/student/forgot_pass_page.dart'; // Import the ForgotPasswordPage
-import 'package:eduregistryselab/student/home_page.dart'
-    as user_home; // Example for student home page
-// import 'package:eduregistryselab/admin/home_page_admin.dart' as teacher_home;
-// import 'package:eduregistryselab/superadmin/superadmin.dart' as admin_home;
-
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:firebase_core/firebase_core.dart';
-// import 'package:firebase_database/firebase_database.dart';
+import 'package:eduregistryselab/student/home_page.dart' as user_home; // Example for student home page
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Import this package
 
@@ -119,23 +112,34 @@ class LoginPageState extends State<LoginPage> {
                     top: 150,
                     right: 0,
                     child: Center(
-                      child: Column(
-                        children: const [
-                          Text(
-                            'EduRegistry',
-                            style: TextStyle(
-                              color: Color(0xFF332DA1),
-                              fontSize: 24,
-                              fontWeight: FontWeight.w600,
-                            ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Logo next to EduRegistry text
+                          Image.asset(
+                            'assets/logo.png', // Make sure the path is correct
+                            height: 50, // Adjust the size of the logo
                           ),
-                          Text(
-                            'Track. Analyze. Empower.',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                            ),
+                          SizedBox(width: 10), // Space between logo and text
+                          Column(
+                            children: const [
+                              Text(
+                                'EduRegistry',
+                                style: TextStyle(
+                                  color: Color(0xFF332DA1),
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Text(
+                                'Track. Analyze. Empower.',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
