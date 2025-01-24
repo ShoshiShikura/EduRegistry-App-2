@@ -1,8 +1,74 @@
 import 'package:flutter/material.dart';
-//import 'package:cloud_firestore/cloud_firestore.dart';
-//import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Firestore integration
+import 'dart:math';
 
-class StatisticPage extends StatelessWidget {
+class StatisticPage extends StatefulWidget {
+  @override
+  _StatisticPageState createState() => _StatisticPageState();
+}
+
+class _StatisticPageState extends State<StatisticPage> {
+  String selectedMonth = "JANUARY"; // Default selected month
+  List<String> months = [
+    'JANUARY',
+    'FEBRUARY',
+    'MARCH',
+    'APRIL',
+    'MAY',
+    'JUNE',
+    'JULY',
+    'AUGUST',
+    'SEPTEMBER',
+    'OCTOBER',
+    'NOVEMBER',
+    'DECEMBER'
+  ];
+
+  Future<List<Map<String, dynamic>>> fetchMeritData(String month) async {
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('merit')
+        .where('Timestamp',
+            isGreaterThanOrEqualTo:
+                DateTime(DateTime.now().year, months.indexOf(month) + 1, 1))
+        .where('Timestamp',
+            isLessThan:
+                DateTime(DateTime.now().year, months.indexOf(month) + 2, 1))
+        .get();
+
+    return querySnapshot.docs.map((doc) => doc.data()).toList();
+  }
+
+  void addPresetMeritData() async {
+    final List<Map<String, dynamic>> presetData = List.generate(15, (index) {
+      final random = Random();
+      return {
+        "MatricNo": "MATRIC-${1000 + index}",
+        "MeritValue": random.nextInt(50) - 25, // Values from -25 to 25
+        "ReviewComments": "Sample comment ${index + 1}",
+        "Timestamp": DateTime(
+          2023,
+          random.nextInt(12) + 1,
+          random.nextInt(28) + 1,
+        ),
+      };
+    });
+
+    final batch = FirebaseFirestore.instance.batch();
+    for (var data in presetData) {
+      final docRef = FirebaseFirestore.instance.collection('merit').doc();
+      batch.set(docRef, data);
+    }
+    await batch.commit();
+    print("Preset merit data added successfully!");
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Uncomment the next line to populate Firestore with preset data
+    // addPresetMeritData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,60 +87,85 @@ class StatisticPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
-              'Total Mark add and deducted mark\nNumber of Student and Teacher',
+              'Total Mark added mark\nof Students',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
           SizedBox(height: 16),
-          // Add a placeholder for the chart
+          // Chart Section (Fetching Data)
           Expanded(
-            child: Center(
-              child: Container(
-                width: 300,
-                height: 300,
-                color: Colors.blue.shade50,
-                child: Center(
-                  child: Text(
-                    'Chart Placeholder',
-                    style: TextStyle(color: Colors.blue),
-                  ),
-                ),
-              ),
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: fetchMeritData(selectedMonth),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (snapshot.hasData) {
+                  final meritData = snapshot.data!;
+                  return meritData.isNotEmpty
+                      ? ListView.builder(
+                          itemCount: meritData.length,
+                          itemBuilder: (context, index) {
+                            final data = meritData[index];
+                            return Card(
+                              child: ListTile(
+                                title: Text("MatricNo: ${data['MatricNo']}"),
+                                subtitle:
+                                    Text("Comment: ${data['ReviewComments']}"),
+                                trailing: Text("Merit: ${data['MeritValue']}"),
+                              ),
+                            );
+                          },
+                        )
+                      : Center(
+                          child: Text('No data available for $selectedMonth.'));
+                } else {
+                  return Center(child: Text('No merit data found.'));
+                }
+              },
             ),
           ),
           SizedBox(height: 16),
-          // Month Selector
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: ['AUG', 'SEP', 'OCT', 'NOV', 'DEC'].map((month) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: TextButton(
-                  onPressed: () {
-                    // Implement month selection logic if needed
-                  },
-                  child: Text(
-                    month,
-                    style: TextStyle(
-                      color: month == 'DEC' ? Colors.white : Colors.blue,
+          // Horizontal Scrollable Months Filter
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: months.map((month) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: TextButton(
+                    onPressed: () {
+                      setState(() {
+                        selectedMonth = month;
+                      });
+                    },
+                    child: Text(
+                      month,
+                      style: TextStyle(
+                        color:
+                            selectedMonth == month ? Colors.white : Colors.blue,
+                      ),
+                    ),
+                    style: TextButton.styleFrom(
+                      backgroundColor: selectedMonth == month
+                          ? Colors.green
+                          : Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ),
-                  style: TextButton.styleFrom(
-                    backgroundColor:
-                        month == 'DEC' ? Colors.green : Colors.transparent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                ),
-              );
-            }).toList(),
+                );
+              }).toList(),
+            ),
           ),
           SizedBox(height: 16),
           ElevatedButton.icon(
             onPressed: () {
               // Add functionality for print or navigation
+              print("Printing Statistics...");
             },
             icon: Icon(Icons.print),
             label: Text('Print'),
