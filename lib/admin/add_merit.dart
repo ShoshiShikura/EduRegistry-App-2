@@ -16,10 +16,10 @@ class _AddMeritState extends State<AddMerit> {
     'Clean the desk': 8,
     'Help a friend': 20,
     'Submit homework on time': 15,
-    'Participate in class': 10,
+    'Participate in class': 30,
     'Volunteer for tasks': 55,
-    'Organize study group': 8,
-    'Help teacher': 22,
+    'Organize study group': 100,
+    'Help teacher': 180,
     'Recycle waste': 12,
     'Show kindness': 32,
     'Maintain class decorum': 15
