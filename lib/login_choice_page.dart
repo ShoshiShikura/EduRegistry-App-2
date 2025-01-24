@@ -23,6 +23,13 @@ class LoginChoicePage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center, // Center vertically
               children: [
+                // Add logo image above the "Sign in to your account" text
+                Image.asset(
+                  'assets/logo.png', // Path to your logo image
+                  width: 100, // Adjust the width of the logo as needed
+                  height: 100, // Adjust the height of the logo as needed
+                ),
+                SizedBox(height: 20), // Space between logo and text
                 // The "Sign in to your account" text
                 Padding(
                   padding: const EdgeInsets.only(top: 5),
