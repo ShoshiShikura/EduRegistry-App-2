@@ -76,14 +76,15 @@ class _TeacherPageState extends State<TeacherPage> {
         'Class': null, // Teachers don't have a class
         'Address': address,
         'Email': email,
-        'IC No': icNo,
-        'Matric No': matricNo,
-        'No. Phone': phone,
+        'IC': icNo,
+        'MatricNo': matricNo,
+        'NoPhone': phone,
         'Password': password,
         'Role': role,
         'School': school,
         'Subjects': [], // Empty array initially
         'TotalMerit': null, // Teachers don't use TotalMerit
+        'ProfileImageUrl': 'path/to/image' // Auto-set to plain
       });
 
       // Clear the input fields

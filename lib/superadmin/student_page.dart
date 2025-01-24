@@ -49,7 +49,7 @@ class _StudentPageState extends State<StudentPage> {
       // Check if Matric No already exists
       final querySnapshot = await FirebaseFirestore.instance
           .collection('users')
-          .where('Matric No', isEqualTo: matricNo)
+          .where('MatricNo', isEqualTo: matricNo)
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
@@ -66,13 +66,14 @@ class _StudentPageState extends State<StudentPage> {
           'Class': studentClass,
           'Address': address,
           'Email': email,
-          'IC No': icNo,
-          'Matric No': matricNo,
-          'No. Phone': phone,
+          'IC': icNo,
+          'MatricNo': matricNo,
+          'NoPhone': phone,
           'Password': password,
           'Role': 'Student', // Auto-set Role
           'School': 'SK Bukit Tembakau', // Auto-set School
           'TotalMerit': 0, // Auto-set Total Merit
+          'ProfileImageUrl': 'path/to/image' // Auto-set to plain
         });
 
         // Clear the input fields

@@ -70,7 +70,23 @@ class MyApp extends StatelessWidget {
           );
         },
         // const NotificationsPage(), // Route to NotificationsPage
-        '/chat': (context) => const ChatPage(), // Route to ChatPage
+        '/chat': (context) {
+          // Getting userDocId from SharedPreferences or other source
+          return FutureBuilder<String>(
+            future: _getUserDocId(), // Fetch the userDocId
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator(); // Show loading while fetching userDocId
+              } else if (snapshot.hasError) {
+                return const Center(child: Text("Error fetching userDocId"));
+              } else {
+                final userDocId = snapshot.data!;
+                return ChatPage(
+                    userDocId: userDocId); // Pass userDocId to ProfilePage
+              }
+            },
+          );
+        }, // Route to ChatPage
         '/profile': (context) {
           // Getting userDocId from SharedPreferences or other source
           return FutureBuilder<String>(
